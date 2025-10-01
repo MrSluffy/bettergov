@@ -42,13 +42,39 @@ export async function navigate(
 
   // For desktop
   if (option) {
-    await page.getByRole('link', { name: option, exact: true }).first().hover();
+    const linkElement = page
+      .getByRole('link', { name: option, exact: true })
+      .first();
+    await linkElement.hover();
+    // Wait for the dropdown to become visible after hover
+    await page.waitForTimeout(300);
+
+    // Wait for the dropdown menu to be visible if we have a subOption
+    if (subOption) {
+      // Wait for the specific menu item to be visible instead of the generic menu container
+      await page.waitForSelector(`[role="menuitem"]:has-text("${subOption}")`, {
+        state: 'visible',
+        timeout: 5000,
+      });
+    }
   }
 
   if (subOption) {
+    // Keep hovering over the parent link to maintain the dropdown
+    if (option) {
+      await page
+        .getByRole('link', { name: option, exact: true })
+        .first()
+        .hover();
+    }
+
+    // Wait a moment for the menu to stabilize
+    await page.waitForTimeout(100);
+
+    // Click the menu item
     await page
       .getByRole('menuitem', { name: subOption, exact: true })
       .first()
-      .click();
+      .click({ timeout: 10000 });
   }
 }

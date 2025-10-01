@@ -8,19 +8,16 @@ test.describe('Navigation', () => {
     await page.goto('/');
 
     // Test Philippines dropdown menu
-    await navigate(page, 'Philippines');
     if (isMobile) {
+      await navigate(page, 'Philippines');
       await expect(
         page.getByRole('link', { name: 'About the Philippines' })
       ).toBeVisible();
     } else {
-      await expect(
-        page.getByRole('menuitem', { name: 'About the Philippines' })
-      ).toBeVisible();
+      // For desktop, just navigate directly to the submenu item
+      // The navigation utility will handle the hover and click
+      await navigate(page, 'Philippines', 'About the Philippines');
     }
-
-    // Navigate to About Philippines
-    await navigate(page, null, 'About the Philippines', false);
 
     await expect(page.url()).toContain('/philippines/about');
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
