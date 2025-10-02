@@ -38,9 +38,8 @@ public/
 # Markdown files (skip formatting)
 *.md
 
-# Dependencies
-.pnp
-.pnp.js
+# IDE directory
+.idea/
 
 # Cache
 .npm
